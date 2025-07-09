@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/03_Middleware/app.js"
+    "dev": "nodemon src/04_ErrorHandlers/app.js"
   },
   "keywords": [
     "nodejs",
