@@ -4,8 +4,9 @@
 | `app.get()` | Specific GET route handling |
 */
 const express = require("express");
-const app = express();
+const app = express(); //created express application
 
+//route handler
 // app.use("/", (req, res) => { // in  this case(app.use) "/" will match to route of every other route. so in all case it will print this result only
 //   res.send("Namaste Manish");// if we will put this code at end then this will not occur bcz order of code matters , it works from top to bottom
 // });
@@ -32,8 +33,6 @@ app.post("/user", (req, res) => {
 app.delete("/user", (req, res) => {
   res.send("Deleted Successfully!");
 });
-
-
 
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
