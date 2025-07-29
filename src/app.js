@@ -84,18 +84,34 @@ app.delete("/user", async (req, res) => {
 });
 
 // Update data of the user
-app.patch("/user", async (req, res) => {
-  const userid = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  // const userId = req.body.userId;
+  const userid = req.params?.userId; //req.params -  route parameters in an Express.js reques and ?. checks if req.params exists before trying to access .userId. This helps prevent errors like Cannot read property 'userId' of undefined
   const data = req.body;
 
   try {
+    //for validatind data - limited things can only be updated
+    const ALLOWED_IPDATES = ["photoUrl", "about", "gender", "age"];
+
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_IPDATES.includes(k)
+    );
+    if (!isUpdateAllowed) {
+      throw new Error("update not aloowed");
+    }
+
+    if (data?.skills.length > 10) {
+      throw new Error("Skills cannot be more than 10");
+    }
+    
+    //after validation updation will occur
     const user = await User.findByIdAndUpdate({ _id: userid }, data, {
       returnDocument: "after",
-      runValidators :true,
+      runValidators: true,
     });
     // console.log(user); // it will give the after updated data and if we returnDocument = "before" then it will give before data
     res.send("Uer data updated");
-  } catch(err) {
+  } catch (err) {
     res.status(400).send("UPDATE FAILED : " + err.message);
   }
 });
