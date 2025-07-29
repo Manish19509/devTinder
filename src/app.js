@@ -91,7 +91,7 @@ app.patch("/user/:userId", async (req, res) => {
 
   try {
     //for validatind data - limited things can only be updated
-    const ALLOWED_IPDATES = ["photoUrl", "about", "gender", "age"];
+    const ALLOWED_IPDATES = ["photoUrl", "about","skills", "gender", "age"];
 
     const isUpdateAllowed = Object.keys(data).every((k) =>
       ALLOWED_IPDATES.includes(k)
@@ -103,7 +103,7 @@ app.patch("/user/:userId", async (req, res) => {
     if (data?.skills.length > 10) {
       throw new Error("Skills cannot be more than 10");
     }
-    
+
     //after validation updation will occur
     const user = await User.findByIdAndUpdate({ _id: userid }, data, {
       returnDocument: "after",
