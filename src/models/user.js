@@ -3,6 +3,8 @@
 const mongoose = require("mongoose");
 //npm - validator
 const validator = require("validator");
+const bcrypt = require("bcrypt");
+
 //user schema
 const userSchema = new mongoose.Schema(
   {
@@ -77,5 +79,26 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+//These functions are related to the user.
+
+//don't use arrow function here bcz of "this"
+userSchema.methods.getJWT = async function () {
+  const user = this; // this will represent that particualr instance which we will use
+
+  const token = await jwt.sign({ _id: this._id }, "Manish@19509", {
+    expiresIn: "1d",
+  });
+  return token;
+};
+
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const user = this;
+  const passwordHash = user.password;
+  const isPasswordValid = await bcrypt.compare(
+    passwordInputByUser,
+    passwordHash
+  );
+  return isPasswordValid;
+};
 //mongoose model
 module.exports = mongoose.model("User", userSchema); // User will always start with capital, since we will create new instances of it as we do with class

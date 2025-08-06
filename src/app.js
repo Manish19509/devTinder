@@ -78,16 +78,27 @@ app.post("/login", async (req, res) => {
       // throw new Error("Entered wrong EmailId");//don't give this info
       throw new Error("Invalid Credentials");
     } else {
-      const isPasswordValid = await bcrypt.compare(password, user.password); // return true or false
+      // const isPasswordValid = await bcrypt.compare(password, user.password); // return true or false
+      const isPasswordValid = await user.validatePassword(password); //offloaded this to user.js , to make it reusable and readable code
 
       if (isPasswordValid) {
         //here i will write the logic of cookies and all
         //pseudo steps
         //create a JWT Token
-        const token = await jwt.sign({ _id: user._id }, "Manish@19509"); //the token which will created will hide userid with secret key Manish@19509(vvimp)
+
+        // const token = await jwt.sign({ _id: user._id }, "Manish@19509", {
+        //   expiresIn: "1d",
+        // }); //the token which will created will hide userid with secret key Manish@19509(vvimp) and will expire in 1 day
+
+        //imp - instead of writing above 3 lines of code ,we can write one line code as blow, bcz we had wrote above code in user.js , it is a better way of writting
+
+        const token = await user.getJWT();
         // console.log(token);
+
         //add the token to cookie ans send the response back to the user
-        res.cookie("token", token); //got code from express
+        res.cookie("token", token, {
+          expires: new Date(Date.now() + 8 * 3600000),
+        }); //got code from express - and we are expiring cookie after 8h
 
         res.send("Loging successful!!!");
       } else {
@@ -216,10 +227,12 @@ app.get("/profile", userAuth, async (req, res) => {
 //   }
 // });
 
-app.post("/sendConnectionRequest", async (req, res) => {
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
   //sending connection request
+
   console.log("Sending connection request");
-  res, send("Connect request send");
+  res.send(user.firstName + " Sent the connection request");
 });
 connectDB()
   .then(() => {
