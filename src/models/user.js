@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 //npm - validator
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 //user schema
 const userSchema = new mongoose.Schema(
