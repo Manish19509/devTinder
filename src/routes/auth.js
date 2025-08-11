@@ -101,7 +101,18 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
-
-
+//logout
+authRouter.post("/logout", async (req, res) => {
+  res
+    .cookie("token", null, {
+      express: new Date(Date.now()),
+    })
+    .send("Logout Sussessful");
+  //above chaining is used else we can also write in this way
+  // res.cookie("token", null, {
+  //   express: new Date(Date.now()),
+  // });
+  // res.send();
+});
 
 module.exports = authRouter;
