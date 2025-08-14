@@ -46,13 +46,20 @@ const userSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
+
       //custom validatin function
       //by default - it will work when we create new use
       //In update api i will have to use runValidator: true,
-      validate(value) {
-        if (!["male", "female", "other"].includes(value)) {
-          throw new Error("Gender data is not valid");
-        }
+      // validate(value) {
+      //   if (!["male", "female", "other"].includes(value)) {
+      //     throw new Error("Gender data is not valid");
+      //   }
+      // },
+
+      //using enum
+      enum: {
+        values: ["male", "female", "other"],
+        message: `{value} is not valid gender type`,
       },
     },
     photoUrl: {

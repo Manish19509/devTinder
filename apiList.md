@@ -14,8 +14,11 @@
 
 ## connectionRequestRouter
 
+- POST/request/send/:status/userId
+<!-- we can use above for below 2 apis   -->
 - POST/request/send/interested/:userId
 - POST/request/send/ignored/:userId
+
 - POST/request/review/accepted/:requestId
 - POST/request/review/rejected/:requestId
 
