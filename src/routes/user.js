@@ -54,4 +54,71 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   }
 });
 
+// /feed?page=1&limit=10 like this we can do changes in limit and pageNumber
+userRouter.get("/feed", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    // sanitize limit - limit it to 50 only now
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
+
+    //user see all the user cards
+    // his connections
+    //ignored profile
+    //already sent the connection request
+    // his own card
+
+    //Find all connection requests (sent + received)
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId toUserId");
+
+    const hideUsersFromFeed = new Set(); //it is like array which will have only unique element no duplicate
+    connectionRequests.forEach((req) => {
+      hideUsersFromFeed.add(req.fromUserId.toString());
+      hideUsersFromFeed.add(req.toUserId.toString());
+    });
+
+    const users = await User.find({
+      $and: [
+        {
+          _id: { $nin: Array.from(hideUsersFromFeed) },
+        },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    })
+      .select(USER_SAFE_DATA)
+      .skip(skip)
+      .limit(limit);
+
+    res.send(users);
+
+    //api made by me
+    // // 1. Find all users who already have a connection request with me in those statuses
+    // // const connections = await ConnectionRequest.find({
+    // //   $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    // //   status: { $in: ["accepted", "interested"] },
+    // // });
+    // // // 2. Collect their userIds
+    // // const excludedUserIds = connections.map((req) =>
+    // //   req.fromUserId.toString() === loggedInUser._id.toString()
+    // //     ? req.toUserId
+    // //     : req.fromUserId
+    // // );
+    // // // 3. Add myself also to excluded list
+    // // excludedUserIds.push(loggedInUser._id);
+
+    // // // 4. Find users not in excluded list
+    // // const feed = await User.find(
+    // //   { _id: { $nin: excludedUserIds } },
+    // //   USER_SAFE_DATA // only safe fields
+    // // );
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = userRouter;
