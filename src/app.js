@@ -245,12 +245,14 @@ app.use(cookieParser()); //// <-- this is important middleware
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
 
 //now we will use this routes
 //express js will go in a sequence to this routes and find the exact route - read documentation
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
+app.use("/", userRouter);
 
 connectDB()
   .then(() => {

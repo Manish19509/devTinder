@@ -20,6 +20,7 @@
 - POST/request/send/ignored/:userId
 
 <!-- review -->
+
 - POST/review/send/:status/userId
 
 - POST/request/review/accepted/:requestId
@@ -27,11 +28,14 @@
 
 ## userRouter
 
+//to get all received request
+
+- GET/user/requests/received
+
 //to get all connection
 
 - GET/user/connection
-  //to get all received request
-- GET/user/requests/receiveed
+
 - GET/user/feed
 
 status : ignored, interested , accepted , rejected
