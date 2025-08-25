@@ -7,10 +7,18 @@ const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const { userAuth } = require("./middlewares/auth");
+const cors = require("cors");
 
 //this middleware will be activated for all the routes
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json()); //WE will have to use middleware bcz dynamic data is comming in json format and it will convert json in js object and we can use that data
 app.use(cookieParser()); //// <-- this is important middleware
+
 // Why do we have to use middleware like express.json() and cookieParser() with app.use(...), but not do the same with jsonwebtoken?
 // express.json() and cookieParser() are middleware functions - Because these packages need to intercept and modify incoming requests globally before they reach your route handlers.
 // jsonwebtoken is not middleware — it's a utility library - These functions just return a value. They don’t modify the request/response. So you don’t use app.use() for them.

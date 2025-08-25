@@ -90,7 +90,7 @@ authRouter.post("/login", async (req, res) => {
           expires: new Date(Date.now() + 8 * 3600000),
         }); //got code from express - and we are expiring cookie after 8h
 
-        res.send("Loging successful!!!");
+        res.send(user);
       } else {
         // throw new Error("Password is not correct");
         throw new Error("Invalid Credentials");
